@@ -1,5 +1,4 @@
 import { abs, atan2_deg, atan_deg, cos_deg, floor, max, min, PI, sign, sin_deg, sqrt, tan_deg } from '@tubular/math';
-import { Appearance } from 'src/advanced-options/advanced-options.component';
 import { circleIntersections, ECLIPTIC_OUTER_RADIUS, eclipticToOffCenter, findCircleRadius } from 'src/math/math';
 import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -23,7 +22,6 @@ export class SafeHtmlPipe implements PipeTransform {
 }
 
 export interface SvgHost {
-  appearance: Appearance;
   bohemianHours?: string;
   bohemianHoursSouth?: string;
   darkCy?: number;
@@ -258,7 +256,7 @@ export function adjustGraphicsForLatitude(host: SvgHost): void {
   host.rotateSign = (host.southern ? -1 : 1);
   ({ cy: host.horizonCy, d: host.horizonPath, r: host.horizonR } = getAltitudeCircle(host, 0, true));
   ({ cy: host.darkCy, r: host.darkR } =
-    getAltitudeCircle(host, host.appearance === Appearance.ORIGINAL_1410 ? -10 : -18));
+    getAltitudeCircle(host, -18));
 
   const absLat = abs(host.latitude);
   const excessLatitude = absLat - ARCTIC;

@@ -5,7 +5,6 @@
       [class.collapsed]="collapsed">
     <p-tieredMenu #menu [popup]="true" [model]="menuItems" appendTo="body"></p-tieredMenu>
     <i class="pi pi-bars" (click)="menu.toggle($event)" [class.collapsed]="collapsed"></i>
-    <i class="pi pi-plus" (click)="advancedOptions.show()" [class.collapsed]="collapsed"></i>
     <i class="pi pi-info-circle" (click)="showInfoPanel = !showInfoPanel" [class.collapsed]="collapsed"></i>
     <i class="pi pi-chevron-down" (click)="collapsed = !collapsed" [class.collapsed]="collapsed"></i>
     <div class="place-name-group" [class.collapsed]="collapsed">
@@ -62,8 +61,6 @@
           [options]="{ angleStyle: DDD, compass: WEST_EAST, decimalPrecision: 1, locale: specificLocale }"></tbw-angle-editor>
     </div>
     <div class="time-text" [class.collapsed]="collapsed" [class.track-time]="trackTime">{{timeText}}</div>
-
-    <app-advanced-options #advancedOptions></app-advanced-options>
   </div>
 
   <div *ngIf="smallMobile" id="alt-language-menu" [style.display]="showLanguageMenu ? 'block' : 'none'">
@@ -72,8 +69,8 @@
   </div>
 
   <div id="svg-wrapper" [class.wide]="collapsed && !showInfoPanel"
-      [class.post-2018]="appearance === CURRENT || appearance === CURRENT_NO_MAP"
-      [class.orig-1410]="appearance === ORIGINAL_1410">
+      [class.post-2018]="appearance === CURRENT"
+    >
     <svg viewBox="0 0 600 600" [class.controls-collapsed]="collapsed" [class.show-info-panel]="showInfoPanel">
       <defs>
         <filter id="filterHand" x="0" y="0" width="200%" height="200%">
@@ -135,7 +132,7 @@
           <path d="M2.0 -200.0L2.0 -11.313708498984761A4.0 4.0 0 0 0 4.0 -6.928203230275509A8.0 8.0 0 0 1 6.928203230275509 -4.0A4.0 4.0 0 0 0 11.313708498984761 -2.0L100.0 -2.0L100.0 -1.25L150.0 -1.25L150.0 1.25L100.0 1.25L100.0 2.0L11.313708498984761 2.0A4.0 4.0 0 0 0 6.928203230275509 4.0A8.0 8.0 0 0 1 4.0 6.928203230275509A4.0 4.0 0 0 0 2.0 11.313708498984761L2.0 80.0L-2.0 80.0L-2.0 11.313708498984761A4.0 4.0 0 0 0 -4.0 6.928203230275509A8.0 8.0 0 0 1 -6.928203230275509 4.0A4.0 4.0 0 0 0 -11.313708498984761 2.0L-100.0 2.0L-100.0 -2.0L-11.313708498984761 -2.0A4.0 4.0 0 0 0 -6.928203230275509 -4.0A8.0 8.0 0 0 1 -4.0 -6.928203230275509A4.0 4.0 0 0 0 -2.0 -11.313708498984761L-2.0 -200.0"/>
         </symbol>
         <symbol id="leverSymbol" overflow="visible">
-          <use [attr.href]="appearance === ORIGINAL_1410 ? '#leverData-1410' : '#leverData'" class="leverSymbol"/>
+          <use [attr.href]="'#leverData'" class="leverSymbol"/>
         </symbol>
         <symbol id="hourAngleStarData" overflow="visible">
           <path d="M193.0 5.0L197.5 7.8L197.3 2.5L202.0 0.0L197.3 -2.5L197.5 -7.8L193.0 -5.0L188.5 -7.8L188.7 -2.5L184.0 -0.0L188.7 2.5L188.5 7.8"/>
@@ -236,37 +233,6 @@
                 <tspan dy="-2">SOL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NOCTIS</tspan>
               </textPath>
             </text>
-            <ng-container *ngIf="appearance === ORIGINAL_1410">
-              <text *ngIf="latitude > -80 && latitude < 80">
-                <textPath href="#equator-path" startOffset="50%" class="latitude-text">
-                  <tspan dy="-2">CIRCVLVS&nbsp;AEQVINOCTII</tspan>
-                </textPath>
-              </text>
-              <ng-container *ngIf="!self.southern">
-                <text *ngIf="latitude < 56">
-                  <textPath href="#c-cancri-path" startOffset="46%" class="latitude-text">
-                    <tspan dy="-2">CIRCVLVS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CANCRI</tspan>
-                  </textPath>
-                </text>
-                <text>
-                  <textPath href="#c-capricorni-path" startOffset="50%" class="latitude-text">
-                    <tspan dy="-2">CIRCVLVS&nbsp;CAPRICORNI</tspan>
-                  </textPath>
-                </text>
-              </ng-container>
-              <ng-container *ngIf="self.southern">
-                <text *ngIf="latitude > -56">
-                  <textPath href="#c-cancri-path" startOffset="52%" class="latitude-text smaller">
-                    <tspan dy="-2">CIRCVLVS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CAPRICORNI</tspan>
-                  </textPath>
-                </text>
-                <text>
-                  <textPath href="#c-capricorni-path" startOffset="50%" class="latitude-text">
-                    <tspan dy="-2">CIRCVLVS&nbsp;CANCRI</tspan>
-                  </textPath>
-                </text>
-              </ng-container>
-            </ng-container>
             <!-- cspell:enable -->
           </g>
           <g id="time" [class.four-as-iiii]="altFour">
@@ -344,7 +310,7 @@
                 <use href="#leverSymbol" class="leverSymbol"/>
               </g>
             </g>
-            <g *ngIf="appearance !== ORIGINAL_1410" [attr.filter]="filterRelief">
+            <g [attr.filter]="filterRelief">
               <g id="ecliptic_positive_hourAngleStar" [attr.transform]="eclipticTransform()">
                 <use href="#hourAngleStarSymbol" class="hourAngleStarSymbol"/>
               </g>
@@ -605,70 +571,15 @@
     </svg>
   </div>
 
-  <div *ngIf="showInfoPanel" class="info-panel-overlay" [style.display]="showInfoPanel" [class.expanded]="!collapsed">
-    <div class="info-panel">
-      <i class="pi pi-times closer" (click)="showInfoPanel = false"></i>
-      <div class="time-grid">
-        <span>{{ zoneOffset }}</span>
-        <span class="num">{{ localTime }}</span>
-        <span i18n>Local mean time:</span>
-        <span class="num">{{ localMeanTime }}</span>
-        <span i18n>Local solar time:</span>
-        <span class="num">{{ localSolarTime }}</span>
-        <span i18n>Sidereal time:</span>
-        <span class="num">{{ siderealTime }}</span>
-        <span i18n>Bohemian time:</span>
-        <span class="num">{{ bohemianTime }}</span>
-        <span i18n>Sun rise/set:</span>
-        <span class="num">{{ sunrise }} • {{ sunset }}</span>
-        <span i18n>Moon rise/set:</span>
-        <span class="num">{{ moonrise }} • {{ moonset }}</span>
-      </div>
-      <div *ngIf="showRecalibration" class="recalibration">
-        <span i18n>Last virtual recalibration:</span>&nbsp;<span class="num">{{ lastRecalibration }}</span>
-      </div>
-      <table [style.margin-top]="showRecalibration ? '0' : '1em'">
-        <ng-container *ngIf="showErrors">
-          <tr>
-            <th>&nbsp;</th>
-            <th i18n>Actual</th>
-            <th>Orloj</th>
-            <th>Δ</th>
-          </tr>
-        </ng-container>
-        <tr>
-          <td i18n>Sun λ</td>
-          <td class="num">{{ true_sunAngle.orig | number: '1.0-0' }}° {{ toZodiac(true_sunAngle.orig) }}</td>
-          <ng-container *ngIf="showErrors">
-            <td class="num">{{ sunAngle.orig | number: '1.0-0' }}°</td>
-            <td class="diff wide">{{ errorSun | number: '1.1-1' }}°, {{ errorSunMinutes | number: '1.1-1' }}
-              <span i18n>mins</span></td>
-          </ng-container>
-        </tr>
-        <tr>
-          <td i18n>Moon λ</td>
-          <td class="num">{{ true_moonAngle.orig | number: '1.0-0' }}° {{ toZodiac(true_moonAngle.orig) }}</td>
-          <ng-container *ngIf="showAllErrors">
-            <td class="num">{{ moonAngle.orig | number: '1.0-0' }}°</td>
-            <td class="diff wide">{{ errorMoon | number: '1.1-1' }}°, {{ errorMoonDays | number: '1.1-1' }}
-              <span i18n>days</span></td>
-          </ng-container>
-        </tr>
-        <tr>
-          <td i18n>Moon phase</td>
-          <td class="num">{{ true_moonPhase | number: '1.0-0' }}°</td>
-          <ng-container *ngIf="showAllErrors">
-            <td class="num">{{ moonPhase | number: '1.0-0' }}°</td>
-            <td class="diff wide">{{ errorPhase | number: '1.1-1' }}°, {{ errorPhaseDays | number: '1.1-1' }}
-              <span i18n>days</span></td>
-          </ng-container>
-        </tr>
-      </table>
-    </div>
-  </div>
-
   <div i18n id="graphics-credit">Original SVG clock graphics by Jan Tošovský</div>
 
   <p-toast position="bottom-center" [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'"></p-toast>
   <p-confirmDialog i18n-header header="Change time"></p-confirmDialog>
+</div>
+
+<div class="custom-content-area">
+  <div class="time-display">{{timeText}}</div>
+  <!-- Additional content can be added here -->
+   hi whats up
+   <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="Google Logo">
 </div>

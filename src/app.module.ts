@@ -18,13 +18,11 @@ import { TubularNgWidgetsModule } from '@tubular/ng-widgets';
 
 import { AppComponent } from './app/app.component';
 import { TimezoneSelectorComponent } from './timezone-selector/timezone-selector.component';
-import { AdvancedOptionsComponent } from './advanced-options/advanced-options.component';
 import { SafeHtmlPipe } from './svg/svg';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AdvancedOptionsComponent,
     TimezoneSelectorComponent,
     SafeHtmlPipe
   ],

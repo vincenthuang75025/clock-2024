@@ -2,7 +2,6 @@ import { BufferGeometry, CanvasTexture, CylinderGeometry, DoubleSide, Mesh, Mesh
 import { getPixel, isString, noop, processMillis, setPixel, strokeLine } from '@tubular/util';
 import { cos, floor, max, mod, PI, round, sin, SphericalPosition3D, sqrt, tan_deg, to_radian } from '@tubular/math';
 import { mergeBufferGeometries } from '../three/three-utils';
-import { Appearance } from '../advanced-options/advanced-options.component';
 
 const MAP_HEIGHT = 500;
 const MAP_WIDTH = 1000;
@@ -35,7 +34,7 @@ export class Globe {
   private static mapLoading = false;
   private static waitList: { resolve: () => void, reject: (reason: any) => void }[] = [];
 
-  private appearance = Appearance.CURRENT;
+  private appearance = 0;
   private camera: PerspectiveCamera;
   private currentPixelSize = DEFAULT_GLOBE_PIXEL_SIZE;
   private drawingTimer: any;
@@ -81,7 +80,7 @@ export class Globe {
           reject(new Error('Map image failed to load from: ' + image.src));
         };
 
-        image.src = mapIndex ? 'assets/world-p2018.jpg' : 'assets/world.jpg';
+        image.src = 'assets/world-p2018.jpg';
       });
 
       imagePromise.then(image => {
@@ -99,14 +98,11 @@ export class Globe {
         if (mapIndex) {
           this.mapImage2018 = image;
           this.mapCanvas2018 = canvas;
-          this.mapPixels[Appearance.CURRENT] = context.getImageData(0, 0, MAP_WIDTH, MAP_HEIGHT);
-          // Make mapless grid for Appearance.CURRENT_NO_MAP
+          this.mapPixels[0] = context.getImageData(0, 0, MAP_WIDTH, MAP_HEIGHT);
           context.fillStyle = this.getSkyColorColor2018();
           context.fillRect(0, 0, MAP_WIDTH, MAP_HEIGHT);
           this.drawGlobeGrid(context);
-          this.mapPixels[Appearance.CURRENT_NO_MAP] = context.getImageData(0, 0, MAP_WIDTH, MAP_HEIGHT);
-          // Restore map pixels to canvas
-          context.putImageData(this.mapPixels[Appearance.CURRENT], 0, 0);
+          context.putImageData(this.mapPixels[0], 0, 0);
 
           this.mapLoading = false;
           this.waitList.forEach(cb => cb.resolve());
@@ -114,7 +110,6 @@ export class Globe {
         else {
           this.mapImage = image;
           this.mapCanvas = canvas;
-          this.mapPixels[Appearance.PRE_2018] = context.getImageData(0, 0, MAP_WIDTH, MAP_HEIGHT);
           ++mapIndex;
           loadOneMap();
         }
@@ -195,8 +190,7 @@ export class Globe {
 
     this.globeMesh.rotation.y = -to_radian(lon);
     this.globeMesh.rotation.x = to_radian(lat);
-    this.camera.rotation.z = (lat >= 0 || this.appearance === Appearance.CURRENT ||
-      this.appearance === Appearance.CURRENT_NO_MAP ? PI : 0);
+    this.camera.rotation.z = PI;
 
     requestAnimationFrame(() => this.renderer.render(this.scene, this.camera));
   }
@@ -223,11 +217,6 @@ export class Globe {
       target.width = this.currentPixelSize;
       target.height = this.currentPixelSize;
       this.offscreen = new ImageData(this.currentPixelSize, this.currentPixelSize);
-    }
-
-    if (this.appearance === Appearance.ORIGINAL_1410) {
-      target.getContext('2d').clearRect(0, 0, this.currentPixelSize, this.currentPixelSize);
-      return;
     }
 
     if (!this.initialized || this.lastLatitude !== lat || this.lastLongitude !== lon) {
@@ -266,7 +255,7 @@ export class Globe {
     }
   }
 
-  setAppearance(appearance: Appearance): void {
+  setAppearance(appearance: number): void {
     if (this.appearance !== appearance) {
       this.appearance = appearance;
       this.resetRenderer();
@@ -288,7 +277,7 @@ export class Globe {
   }
 
   private setUpRenderer(): void {
-    const post2018 = (this.appearance === Appearance.CURRENT || this.appearance === Appearance.CURRENT_NO_MAP);
+    const post2018 = true;
 
     this.camera = new PerspectiveCamera(post2018 ? FIELD_OF_VIEW_2018 : FIELD_OF_VIEW, 1);
     this.scene = new Scene();
@@ -298,12 +287,9 @@ export class Globe {
     if (!post2018)
       globe.scale(-1, -1, -1);
 
-    if (this.appearance === Appearance.CURRENT_NO_MAP)
-      this.globeMesh = new Mesh(globe, new MeshBasicMaterial({ color: Globe.getSkyColorColor2018() }));
-    else
-      this.globeMesh = new Mesh(globe,
-        new MeshBasicMaterial(
-          { map: new CanvasTexture(post2018 ? Globe.mapCanvas2018 : Globe.mapCanvas), side: DoubleSide }));
+    this.globeMesh = new Mesh(globe,
+      new MeshBasicMaterial(
+        { map: new CanvasTexture(post2018 ? Globe.mapCanvas2018 : Globe.mapCanvas), side: DoubleSide }));
 
     this.scene.add(this.globeMesh);
 
@@ -348,7 +334,7 @@ export class Globe {
   }
 
   * generateRotatedGlobe(lon: number, lat: number): Generator<boolean> {
-    const post2018 = (this.appearance === Appearance.CURRENT || this.appearance === Appearance.CURRENT_NO_MAP);
+    const post2018 = true;
     const cameraZ = post2018 ? VIEW_DISTANCE_2018 : VIEW_DISTANCE;
     const fieldOfView = post2018 ? FIELD_OF_VIEW_2018 : FIELD_OF_VIEW;
     const viewRadius = (cameraZ + GLOBE_RADIUS) * tan_deg(fieldOfView / 2);
@@ -379,7 +365,7 @@ export class Globe {
     const Azy = cosb * sinc;
     const Azz = cosb * cosc;
 
-    const pixels = Globe.mapPixels[this.appearance] ?? Globe.mapPixels[Appearance.CURRENT];
+    const pixels = Globe.mapPixels[this.appearance] ?? Globe.mapPixels[0];
     const renderIndex = this.renderIndex2d;
 
     for (let yt = 0; yt < size; ++yt) {

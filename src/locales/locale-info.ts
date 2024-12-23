@@ -4,11 +4,7 @@ export interface LanguageInfo {
 }
 
 export const languageList: LanguageInfo[] = [
-  { directory: 'cs', name: 'Čeština' },
-  { directory: 'de', name: 'Deutsch' },
   { directory: 'en-US', name: 'English' },
-  { directory: 'es', name: 'Español' },
-  { directory: 'fr', name: 'Français' }
 ];
 
 export const SOUTH_NORTH = [

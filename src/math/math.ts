@@ -1,7 +1,6 @@
 import { MOON, SkyObserver, SolarSystem, SUN } from '@tubular/astronomy';
 import { abs, atan2_deg, cos_deg, max, mod, Point, sin_deg, sqrt } from '@tubular/math';
 import ttime, { DateTime, Timezone, utToTdt } from '@tubular/time';
-import { Timing } from 'src/advanced-options/advanced-options.component';
 
 const { julianDay } = ttime;
 
@@ -133,14 +132,14 @@ export function calculateEclipticAnglesFromHandAngle(handAngle: number, sidereal
 }
 
 export function calculateBasicPositions(time: number, zone: string | Timezone, observer: SkyObserver,
-                                        disableDst: boolean, timing: Timing): BasicPositions {
+                                        disableDst: boolean): BasicPositions {
   const _jdu = julianDay(time);
   const _jde = utToTdt(_jdu);
   const _date = new DateTime(time, zone);
   const wt = _date.wallTime;
   const southern = observer.latitude.degrees < 0;
   const _hourOfDay = wt.hour + wt.minute / 60 -
-    (disableDst || (timing !== Timing.MODERN && timing !== Timing.CONSTRAINED_SUN) ? wt.dstOffset / 3600 : 0);
+    (disableDst || false ? wt.dstOffset / 3600 : 0);
   const handAngle = _hourOfDay * 15 - 180;
   const baseSunAngle = solarSystem.getEclipticPosition(SUN, _jde).longitude.degrees;
   const baseMoonAngle = solarSystem.getEclipticPosition(MOON, _jde).longitude.degrees;
@@ -155,11 +154,11 @@ export function calculateBasicPositions(time: number, zone: string | Timezone, o
            _constrainedSunAngle };
 }
 
-export function calculateMechanicalPositions(time: number, timing: Timing, ref: BasicPositions): BasicPositions {
+export function calculateMechanicalPositions(time: number, ref: BasicPositions): BasicPositions {
   const deltaDays = (time - ref._referenceTime) / MILLIS_PER_DAY;
   const deltaSiderealDays = deltaDays * 366 / 365;
   // The moon is off by about one day every three months with the original 366 / 379 gear ratio.
-  const deltaMoonDays = deltaDays * (timing === Timing.MECHANICAL_ORIGINAL ? 366 / 379 : 0.966139); // 0.966137 is closer to the true mean synodic lunar month
+  const deltaMoonDays = deltaDays * (0.966139); // 0.966137 is closer to the true mean synodic lunar month
   const phaseCycles = deltaMoonDays * 2 / 57;
   const handAngle = mod(ref.handAngle + deltaDays * 360, 360);
   const moonHandAngle = mod(ref.moonHandAngle + deltaMoonDays * 360, 360);

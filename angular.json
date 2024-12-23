@@ -17,21 +17,7 @@
       "sourceRoot": "src",
       "prefix": "app",
       "i18n": {
-        "sourceLocale": "en-US",
-        "locales": {
-          "cs": {
-            "translation": "src/locales/messages.cs.xlf"
-          },
-          "de": {
-            "translation": "src/locales/messages.de.xlf"
-          },
-          "es": {
-            "translation": "src/locales/messages.es.xlf"
-          },
-          "fr": {
-            "translation": "src/locales/messages.fr.xlf"
-          }
-        }
+        "sourceLocale": "en-US"
       },
       "architect": {
         "build": {

@@ -938,3 +938,35 @@ svg {
     width: 110px;
   }
 }
+
+.custom-content-area {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  min-height: 200px;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 10px;
+  padding: 15px;
+  color: white;
+  z-index: 1000;
+  
+  .time-display {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .custom-content-area {
+    width: 200px;
+    min-height: 150px;
+    bottom: 10px;
+    right: 10px;
+    
+    .time-display {
+      font-size: 1.2em;
+    }
+  }
+}

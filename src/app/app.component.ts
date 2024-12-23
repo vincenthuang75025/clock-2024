@@ -16,8 +16,6 @@ import { TzsLocation } from '../timezone-selector/timezone-selector.component';
 import { Globe } from '../globe/globe';
 import { basePath, languageList, localeSuffix, SOUTH_NORTH, specificLocale, WEST_EAST } from '../locales/locale-info';
 import { faForward, faPlay, faStop } from '@fortawesome/free-solid-svg-icons';
-import { AdvancedOptionsComponent, Appearance, SettingsHolder, Timing }
-  from '../advanced-options/advanced-options.component';
 import {
   adjustForEclipticWheel, AngleTriplet, BasicPositions, calculateBasicPositions, calculateMechanicalPositions,
   MILLIS_PER_DAY, MILLIS_PER_SIDEREAL_DAY, solarSystem, ZeroAngles
@@ -49,7 +47,7 @@ const pragueLon = 14.4185;
 const defaultSettings = {
   additionalPlanets: false,
   animateBySiderealDays: false,
-  appearance: Appearance.CURRENT,
+  appearance: 0,
   background: '#4D4D4D',
   collapsed: false,
   detailedMechanism: false,
@@ -70,7 +68,7 @@ const defaultSettings = {
   }] as TzsLocation[],
   showInfoPanel: false,
   suppressOsKeyboard: false,
-  timing: Timing.MODERN,
+  timing: 0,
   trackTime: true,
   translucentEcliptic: false,
   zone: 'Europe/Prague'
@@ -128,23 +126,20 @@ languageList.forEach(language =>
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, SettingsHolder, SvgHost {
+export class AppComponent implements OnInit, SvgHost {
   faForward = faForward;
   faPlay = faPlay;
   faStop = faStop;
 
-  CONSTRAINED_SUN = Timing.CONSTRAINED_SUN;
-  CURRENT = Appearance.CURRENT;
-  CURRENT_NO_MAP = Appearance.CURRENT_NO_MAP;
+  CURRENT = 0;
   DD = AngleStyle.DD;
   DDD = AngleStyle.DDD;
   FAST = PlaySpeed.FAST;
-  MODERN = Timing.MODERN;
+  MODERN = 0;
   MAX_YEAR = 2399;
   menuLanguageList = menuLanguageList;
   MIN_YEAR = 1400;
   NORMAL = PlaySpeed.NORMAL;
-  ORIGINAL_1410 = Appearance.ORIGINAL_1410;
   smallMobile = smallMobile;
   SOUTH_NORTH = SOUTH_NORTH;
   specificLocale = specificLocale;
@@ -162,7 +157,7 @@ export class AppComponent implements OnInit, SettingsHolder, SvgHost {
   ISO_OPTS = ['ISO', this.LOCAL_OPTS, { showUtcOffset: true }];
 
   private _additionalPlanets = false;
-  private _appearance = Appearance.CURRENT;
+  private _appearance = 0;
   private _background = '#4D4D4D';
   private _collapsed = false;
   private delayedCollapse = false;
@@ -192,7 +187,7 @@ export class AppComponent implements OnInit, SettingsHolder, SvgHost {
   private _suppressOsKeyboard = false;
   private _time = 0;
   private timeCheck: any;
-  private _timing = Timing.MODERN;
+  private _timing = 0;
   private timingReference: BasicPositions | null | undefined;
   private _trackTime = false;
   private _zone = 'Europe/Prague';
@@ -206,23 +201,12 @@ export class AppComponent implements OnInit, SettingsHolder, SvgHost {
     { label: $localize`↔ Sunrise/transit/sunset`, icon: 'pi pi-circle',
       command: (): void => this.setEventType(EventType.RISE_SET) },
     { separator : true },
-    { label: $localize`Advanced options...`, icon: 'pi pi-circle', command: (): void => {
-      this.collapsed = false;
-      this.advancedOptions?.show();
-    } },
     { label: $localize`Language` + (smallMobile ? '...' : ''), icon: 'pi pi-circle',
       items: smallMobile ? undefined : menuLanguageList,
       command: smallMobile ? (): boolean => this.showLanguageMenu = true : undefined },
     { separator : true },
     { label: $localize`Code on GitHub`, icon: 'pi pi-github', url: 'https://github.com/kshetline/prague-clock',
       target: '_blank' },
-    { label: $localize`Czech Horological Society site`, icon: 'pi pi-home', url: 'https://www.orloj.eu/',
-      target: '_blank' },
-    { label: $localize`About the real clock`, icon: 'pi pi-info-circle',
-      url: $localize`:Language-specific Wikipedia URL:https://en.wikipedia.org/wiki/Prague_astronomical_clock`,
-      target: '_blank' },
-    { label: $localize`About this simulator`, icon: 'pi pi-info-circle', url: `assets/about${localeSuffix}.html`,
-      target: '_blank' }
   ];
 
   // This trick is need to be able to access SvgHost fields which are not explicitly declared here.
@@ -292,8 +276,6 @@ export class AppComponent implements OnInit, SettingsHolder, SvgHost {
   venusAngle = ZeroAngles;
   zoneOffset = '';
 
-  @ViewChild('advancedOptions', { static: true }) advancedOptions: AdvancedOptionsComponent;
-
   get filterEcliptic(): string {
     return this.fasterGraphics && (!this.svgFilteringOn || this.playing) ? null : 'url("#filterEcliptic")';
   }
@@ -332,8 +314,7 @@ export class AppComponent implements OnInit, SettingsHolder, SvgHost {
       }
 
       if (settings.post2018 != null) {
-        settings.appearance = (settings.post2018 ? (settings.hideMap === true ?
-          Appearance.CURRENT_NO_MAP : Appearance.CURRENT) : Appearance.PRE_2018);
+        settings.appearance = 0;
         delete settings.appearance;
       }
 
@@ -368,7 +349,6 @@ export class AppComponent implements OnInit, SettingsHolder, SvgHost {
 
     this.setNow();
     this.placeName = placeName;
-    this.advancedOptions.settingsHolder = this;
 
     if (this.delayedCollapse)
       setTimeout(() => this.collapsed = true);
@@ -482,12 +462,12 @@ export class AppComponent implements OnInit, SettingsHolder, SvgHost {
     }
   }
 
-  get appearance(): Appearance { return this._appearance; }
-  set appearance(value: Appearance) {
+  get appearance(): number { return this._appearance; }
+  set appearance(value: number) {
     if (this.appearance !== value) {
       const wasEmptyCenter = this.emptyCenter;
       this._appearance = value;
-      this.emptyCenter = (value === Appearance.ORIGINAL_1410);
+      this.emptyCenter = false;
       this.altFour = this.emptyCenter;
       this.globe?.setAppearance(value);
 
@@ -496,32 +476,16 @@ export class AppComponent implements OnInit, SettingsHolder, SvgHost {
     }
   }
 
-  get timing(): Timing { return this._timing; }
-  set timing(value: Timing) {
+  get timing(): number { return this._timing; }
+  set timing(value: number) {
     if (this._timing !== value) {
       this._timing = value;
 
-      if (value === Timing.MODERN) {
-        this.showErrors = false;
-        this.showAllErrors = false;
-        this.showRecalibration = false;
-        this.dstChangeAllowed = true;
-        this.timingReference = undefined;
-      }
-      else if (value === Timing.CONSTRAINED_SUN) {
-        this.showErrors = true;
-        this.showAllErrors = false;
-        this.showRecalibration = false;
-        this.dstChangeAllowed = true;
-        this.timingReference = undefined;
-      }
-      else {
-        this.showErrors = true;
-        this.showAllErrors = true;
-        this.showRecalibration = true;
-        this.dstChangeAllowed = false;
-        this.timingReference = RECOMPUTED_WHEN_NEEDED;
-      }
+      this.showErrors = false;
+      this.showAllErrors = false;
+      this.showRecalibration = false;
+      this.dstChangeAllowed = true;
+      this.timingReference = undefined;
 
       this.updateTime(true);
     }
@@ -541,37 +505,7 @@ export class AppComponent implements OnInit, SettingsHolder, SvgHost {
   }
 
   private clearTimingReferenceIfNeeded(): void {
-    if (this.timing !== Timing.MODERN)
-      this.timingReference = RECOMPUTED_WHEN_NEEDED;
-  }
-
-  private adjustMechanicalTimingReference(): void {
-    if (this.timing === Timing.MODERN) {
-      this.timingReference = undefined;
-      return;
-    }
-
-    const date = new DateTime(this.time, this.getZone());
-    const wt = date.wallTime;
-    let refTime: DateTime;
-    let endTime: DateTime;
-
-    if (this.timing === Timing.MECHANICAL_UPDATED) {
-      refTime = new DateTime([wt.y, 1, 1], this.getZone());
-      endTime = new DateTime([wt.y + 1, 1, 1], this.getZone());
-    }
-    else {
-      refTime = new DateTime([wt.y, wt.m - (wt.m % 3), 1], this.getZone());
-      endTime = new DateTime([wt.y, wt.m - (wt.m % 3), 1], this.getZone()).add('months', 3);
-    }
-
-    this.timingReference = calculateBasicPositions(refTime.utcMillis, this.getZone(), this.observer,
-      this.disableDst, this.timing);
-    this.lastWallTime = this.timingReference._date?.wallTime;
-    this.timingReference._referenceTime = refTime.utcMillis;
-    this.timingReference._endTime = endTime.utcMillis;
-    this.lastRecalibration = refTime.format(this.isoFormat ? DATE :
-      'IS{year:numeric,month:2-digit,day:2-digit}', specificLocale);
+    return;
   }
 
   get additionalPlanets(): boolean { return this._additionalPlanets; }
@@ -641,7 +575,7 @@ export class AppComponent implements OnInit, SettingsHolder, SvgHost {
     if (this.playSpeed === PlaySpeed.NORMAL)
       this.time = this.playTimeBase + floor(elapsed / 25) * 60_000;
     else
-      this.time = this.playTimeBase + floor(elapsed / 100) *
+      this.time = this.playTimeBase + floor(elapsed / 200) *
         (this.animateBySiderealDays ? MILLIS_PER_SIDEREAL_DAY : MILLIS_PER_DAY);
 
     if (this.lastWallTime && this.lastWallTime.y === this.MAX_YEAR &&
@@ -901,7 +835,7 @@ export class AppComponent implements OnInit, SettingsHolder, SvgHost {
     const dayLength = this.sunsetB.ut - this.sunsetA.ut;
     const bohemianHour = (jdu - this.sunsetA.ut) / dayLength * 24;
     const basicPositions =
-      calculateBasicPositions(this.time, this.getZone(), this.observer, this.disableDst, this.timing);
+      calculateBasicPositions(this.time, this.getZone(), this.observer, this.disableDst);
     const date = basicPositions._date;
     const wt = date.wallTime;
     const dateLocal = new DateTime(this.time, this.localTimezone);
@@ -917,20 +851,7 @@ export class AppComponent implements OnInit, SettingsHolder, SvgHost {
     this.jupiterAngle = adjustForEclipticWheel(solarSystem.getEclipticPosition(JUPITER, jde).longitude.degrees, southern);
     this.saturnAngle = adjustForEclipticWheel(solarSystem.getEclipticPosition(SATURN, jde).longitude.degrees, southern);
 
-    if (this.timing !== Timing.MODERN && this.timing !== Timing.CONSTRAINED_SUN) {
-      if (!this.timingReference || this.time < this.timingReference._referenceTime ||
-          this.time >= this.timingReference._endTime)
-        this.adjustMechanicalTimingReference();
-
-      forEach(calculateMechanicalPositions(this.time, this.timing, this.timingReference) as any,
-        (key, value) => basicPosKey(key) && ((this as any)[key] = value));
-    }
-    else {
-      forEach(basicPositions as any, (key, value) => basicPosKey(key) && ((this as any)[key] = value));
-
-      if (this.timing === Timing.CONSTRAINED_SUN)
-        this.sunAngle = basicPositions._constrainedSunAngle;
-    }
+    forEach(basicPositions as any, (key, value) => basicPosKey(key) && ((this as any)[key] = value));
 
     const format = this.isoFormat ? DATETIME_LOCAL : 'ISS{year:numeric,month:2-digit,day:2-digit,hour:2-digit}';
 
