@@ -12,19 +12,18 @@ import {
   WINTER_SOLSTICE
 } from '@tubular/astronomy';
 import ttime, { DateAndTime, DateTime, Timezone } from '@tubular/time';
-import { TzsLocation } from '../timezone-selector/timezone-selector.component';
 import { Globe } from '../globe/globe';
-import { basePath, languageList, localeSuffix, SOUTH_NORTH, specificLocale, WEST_EAST } from '../locales/locale-info';
+import { basePath, languageList, SOUTH_NORTH, specificLocale, WEST_EAST } from '../locales/locale-info';
 import { faForward, faPlay, faStop } from '@fortawesome/free-solid-svg-icons';
 import {
-  adjustForEclipticWheel, AngleTriplet, BasicPositions, calculateBasicPositions, calculateMechanicalPositions,
+  adjustForEclipticWheel, AngleTriplet, BasicPositions, calculateBasicPositions,
   MILLIS_PER_DAY, MILLIS_PER_SIDEREAL_DAY, solarSystem, ZeroAngles
 } from 'src/math/math';
 import { adjustGraphicsForLatitude, initSvgHost, sunlitMoonPath, SvgHost } from 'src/svg/svg';
 import { sizeChanges } from '../main';
 import { Subscription, timer } from 'rxjs';
 
-const { DATE, DATETIME_LOCAL, julianDay, TIME } = ttime;
+const { DATETIME_LOCAL, julianDay, TIME } = ttime;
 
 const CLICK_REPEAT_DELAY = 500;
 const CLICK_REPEAT_RATE  = 100;
@@ -33,12 +32,9 @@ const RESUME_FILTERING_DELAY = 1000;
 const SIMPLE_FILTER_IS_SLOW_TOO = isAndroid() || (isSafari() && isMacOS());
 const STOP_FILTERING_DELAY = SIMPLE_FILTER_IS_SLOW_TOO ? 1000 : 3000;
 const START_FILTERING_DELAY = SIMPLE_FILTER_IS_SLOW_TOO ? 1000 : 500;
-const RECOMPUTED_WHEN_NEEDED: null = null;
 
 enum EventType { EQUISOLSTICE, MOON_PHASE, RISE_SET }
 enum PlaySpeed { NORMAL, FAST }
-
-const MAX_SAVED_LOCATIONS = 10;
 
 const prague = $localize`Prague, CZE`;
 const pragueLat = 50.0870;
@@ -65,7 +61,7 @@ const defaultSettings = {
     longitude: pragueLon,
     name: prague,
     zone: 'Europe/Prague'
-  }] as TzsLocation[],
+  }],
   showInfoPanel: false,
   suppressOsKeyboard: false,
   timing: 0,
@@ -73,24 +69,6 @@ const defaultSettings = {
   translucentEcliptic: false,
   zone: 'Europe/Prague'
 };
-
-function removeOldestLocation(locations: TzsLocation[]): TzsLocation[] {
-  let earliestTime = Number.POSITIVE_INFINITY;
-  let earliestIndex = -1;
-
-  for (let i = 0; i < locations.length; ++i) {
-    const loc = locations[i];
-
-    if (loc.lastTimeUsed !== 0 && loc.lastTimeUsed < earliestTime) {
-      earliestIndex = i;
-      earliestTime = loc.lastTimeUsed;
-    }
-  }
-
-  locations.splice(earliestIndex, 1);
-
-  return locations;
-}
 
 function basicPosKey(key: string): boolean { return !key.startsWith('_'); }
 
@@ -251,7 +229,7 @@ export class AppComponent implements OnInit, SvgHost {
   overlapShift = [0, 0, 0, 0, 0];
   placeName = 'Prague, CZE';
   playSpeed = PlaySpeed.NORMAL;
-  recentLocations: TzsLocation[] = [];
+  recentLocations: any[] = [];
   rotateSign = 1;
   saturnAngle = ZeroAngles;
   showAllErrors = false;
@@ -398,18 +376,6 @@ export class AppComponent implements OnInit, SvgHost {
     this.observer = new SkyObserver(this._longitude, this._latitude);
 
     const loc = { latitude: this._latitude, longitude: this._longitude, name: '', zone: this._zone };
-    const match = this.findMatchingLocation(loc);
-
-    setTimeout(() => {
-      if (match) {
-        this.placeName = match.name;
-        this.canEditName = (match.lastTimeUsed !== 0);
-      }
-      else {
-        this.placeName = '';
-        this.canEditName = true;
-      }
-    });
   }
 
   get background(): string { return this._background; }
@@ -585,34 +551,6 @@ export class AppComponent implements OnInit, SvgHost {
       requestAnimationFrame(this.playStep);
   }
 
-  clearLocationItem(index: number): void {
-    if (this.placeName === this.recentLocations[index].name)
-      this.placeName = '';
-
-    this.recentLocations.splice(index, 1);
-    this.recentLocations = clone(this.recentLocations);
-    this.sortRecentLocations();
-  }
-
-  clearRecents(): void {
-    this.recentLocations = clone(defaultSettings.recentLocations);
-    this.changeLocation(this.recentLocations[0]);
-    this.saveSettings();
-  }
-
-  findMatchingLocation(location?: TzsLocation): TzsLocation {
-    if (!location)
-      location = { latitude: this._latitude, longitude: this._longitude, zone: this._zone, name: '' };
-
-    for (const loc of this.recentLocations) {
-      if (loc.zone === location.zone &&
-          abs(loc.latitude - location.latitude) < 0.05 && abs(loc.longitude - location.longitude) < 0.05)
-        return loc;
-    }
-
-    return null;
-  }
-
   private menuItemById(id: string): MenuItem {
     return this.menuItems.find(item => item.id === id);
   }
@@ -705,48 +643,6 @@ export class AppComponent implements OnInit, SvgHost {
         this.timeCheck = undefined;
       }
     }
-  }
-
-  changeLocation(location: TzsLocation): void {
-    if (this.zoneFixTimeout)
-      clearTimeout(this.zoneFixTimeout);
-
-    this.longitude = location.longitude;
-    this.latitude = location.latitude;
-    this.placeName = location.name;
-    this.updateRecentLocations(location);
-    this.zoneFixTimeout = setTimeout(() => {
-      this.placeName = location.name;
-      this.zone = location.zone;
-      this.zoneFixTimeout = undefined;
-    }, 250);
-  }
-
-  private updateRecentLocations(location: TzsLocation): void {
-    const match = this.findMatchingLocation(location);
-
-    if (match) {
-      match.lastTimeUsed = (match.lastTimeUsed === 0 ? 0 : Date.now());
-      match.latitude = location.latitude;
-      match.longitude = location.longitude;
-      match.name = location.name;
-    }
-    else {
-      if (this.recentLocations.length >= MAX_SAVED_LOCATIONS)
-        removeOldestLocation(this.recentLocations);
-
-      location.lastTimeUsed = (location.lastTimeUsed === 0 ? 0 : Date.now());
-      this.recentLocations.push(location);
-    }
-
-    this.sortRecentLocations();
-  }
-
-  private sortRecentLocations(): void {
-    const sortTime = (time: number): number => time === 0 ? Number.MAX_SAFE_INTEGER : time;
-
-    this.recentLocations.sort((a, b) => sortTime(b.lastTimeUsed) - sortTime(a.lastTimeUsed));
-    this.recentLocations = clone(this.recentLocations);
   }
 
   setNow(): void {
@@ -984,36 +880,6 @@ export class AppComponent implements OnInit, SvgHost {
   inputChanged(evt: any): void {
     this.inputName = (evt.target as HTMLInputElement).value || '';
     this.inputLength = this.inputName.trim().length;
-  }
-
-  saveName(): void {
-    if (!this.inputLength)
-      return;
-
-    this.canEditName = true;
-    this.canSaveName = false;
-    this.placeName = this.inputName.trim();
-
-    const match = this.findMatchingLocation();
-
-    if (match) {
-      match.name = this.placeName;
-      match.lastTimeUsed = Date.now();
-    }
-    else {
-      if (this.recentLocations.length >= MAX_SAVED_LOCATIONS)
-        removeOldestLocation(this.recentLocations);
-
-      this.recentLocations.push({
-        lastTimeUsed: Date.now(),
-        latitude: this._latitude,
-        longitude: this._longitude,
-        name: this.placeName,
-        zone: this._zone
-      });
-    }
-
-    this.sortRecentLocations();
   }
 
   cancelEdit(): void {
