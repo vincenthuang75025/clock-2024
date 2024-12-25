@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MenuItem, MessageService, PrimeNGConfig } from 'primeng/api';
 import { abs, floor, max, min, mod, mod2 } from '@tubular/math';
 import {
-  clone, extendDelimited, forEach, getCssValue, isAndroid, isEqual, isIOS, isLikelyMobile, isMacOS, isObject, isSafari, noop,
+  extendDelimited, forEach, getCssValue, isAndroid, isEqual, isLikelyMobile, isMacOS, isObject, isSafari, noop,
   processMillis
 } from '@tubular/util';
 import { AngleStyle, DateTimeStyle, TimeEditorOptions } from '@tubular/ng-widgets';
@@ -171,21 +171,7 @@ export class AppComponent implements OnInit, SvgHost {
   private _zone = 'Europe/Prague';
   private zoneFixTimeout: any;
 
-  menuItems: MenuItem[] = [
-    { label: $localize`↔ Equinox/solstice`, icon: 'pi pi-check',
-      command: (): void => this.setEventType(EventType.EQUISOLSTICE) },
-    { label: $localize`↔ Moon phase`, icon: 'pi pi-circle',
-      command: (): void => this.setEventType(EventType.MOON_PHASE) },
-    { label: $localize`↔ Sunrise/transit/sunset`, icon: 'pi pi-circle',
-      command: (): void => this.setEventType(EventType.RISE_SET) },
-    { separator : true },
-    { label: $localize`Language` + (smallMobile ? '...' : ''), icon: 'pi pi-circle',
-      items: smallMobile ? undefined : menuLanguageList,
-      command: smallMobile ? (): boolean => this.showLanguageMenu = true : undefined },
-    { separator : true },
-    { label: $localize`Code on GitHub`, icon: 'pi pi-github', url: 'https://github.com/kshetline/prague-clock',
-      target: '_blank' },
-  ];
+  menuItems: MenuItem[] = [];
 
   // This trick is need to be able to access SvgHost fields which are not explicitly declared here.
   self: AppComponent & SvgHost = this;
@@ -276,12 +262,6 @@ export class AppComponent implements OnInit, SvgHost {
 
     let settings: any;
 
-    if (isLikelyMobile() || isIOS()) {
-      this.menuItems.push({ separator: true });
-      this.menuItems.push({ label: $localize`Suppress onscreen keyboard`, icon: 'pi pi-circle', id: 'sok',
-                            command: (): boolean => this.suppressOsKeyboard = !this.suppressOsKeyboard });
-    }
-
     try {
       settings = JSON.parse(localStorage.getItem('pac-settings') ?? 'null');
 
@@ -306,7 +286,6 @@ export class AppComponent implements OnInit, SvgHost {
     settings = settings ?? defaultSettings;
     Object.keys(defaultSettings).forEach(key => (this as any)[key] = settings[key] ?? (defaultSettings as any)[key]);
     this.updateObserver();
-    this.updateMenu();
 
     window.addEventListener('beforeunload', () => this.saveSettings());
     setInterval(() => this.saveSettings(), 5000);
@@ -551,15 +530,10 @@ export class AppComponent implements OnInit, SvgHost {
       requestAnimationFrame(this.playStep);
   }
 
-  private menuItemById(id: string): MenuItem {
-    return this.menuItems.find(item => item.id === id);
-  }
-
   get suppressOsKeyboard(): boolean { return this._suppressOsKeyboard; }
   set suppressOsKeyboard(value: boolean) {
     if (this._suppressOsKeyboard !== value) {
       this._suppressOsKeyboard = value;
-      this.updateMenu();
     }
   }
 
@@ -853,19 +827,7 @@ export class AppComponent implements OnInit, SvgHost {
   private setEventType(eventType: EventType): void {
     if (this.eventType !== eventType) {
       this.eventType = eventType;
-      this.updateMenu();
     }
-  }
-
-  private updateMenu(): void {
-    this.menuItems = clone(this.menuItems);
-    this.menuItems.forEach((item, index) => {
-      if (index < 3)
-        item.icon = (index === this.eventType ? 'pi pi-check' : 'pi pi-circle');
-    });
-
-    if (this.menuItemById('sok'))
-      this.menuItemById('sok').icon = (this.suppressOsKeyboard ? 'pi pi-check' : 'pi pi-circle');
   }
 
   editName(): void {
