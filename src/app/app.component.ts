@@ -33,6 +33,12 @@ const SIMPLE_FILTER_IS_SLOW_TOO = isAndroid() || (isSafari() && isMacOS());
 const STOP_FILTERING_DELAY = SIMPLE_FILTER_IS_SLOW_TOO ? 1000 : 3000;
 const START_FILTERING_DELAY = SIMPLE_FILTER_IS_SLOW_TOO ? 1000 : 500;
 
+const STOP_DATES = [
+  { year: 2024, month: 1, day: 4 },  // January 15, 2024
+  { year: 2024, month: 1, day: 9 },  // February 14, 2024
+  // Add more dates as needed
+];
+
 enum EventType { EQUISOLSTICE, MOON_PHASE, RISE_SET }
 enum PlaySpeed { NORMAL, FAST }
 
@@ -98,6 +104,11 @@ menuLanguageList.push({ label: $localize`Default`, url: basePath, target: '_self
 menuLanguageList.push({ separator: true });
 languageList.forEach(language =>
   menuLanguageList.push({ label: language.name, url: basePath + language.directory, target: '_self' }));
+
+interface DateImage {
+  date: Date;
+  imageUrl: string;
+}
 
 @Component({
   selector: 'app-root',
@@ -239,6 +250,20 @@ export class AppComponent implements OnInit, SvgHost {
   true_sunAngle = ZeroAngles;
   venusAngle = ZeroAngles;
   zoneOffset = '';
+
+  private stoppedDates: Set<string> = new Set();
+
+  private STOP_DATE_IMAGES: DateImage[] = [
+    {
+      date: new Date(2024, 0, 4), // January 4th
+      imageUrl: 'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png'
+    },
+    {
+      date: new Date(2024, 0, 9), // January 9th
+      imageUrl: 'https://i.pinimg.com/736x/b3/08/4b/b3084b1ce3c1af6e9a730b29ea0e4912.jpg'
+    },
+    // Add more date-image pairs as needed
+  ];
 
   get filterEcliptic(): string {
     return this.fasterGraphics && (!this.svgFilteringOn || this.playing) ? null : 'url("#filterEcliptic")';
@@ -620,7 +645,7 @@ export class AppComponent implements OnInit, SvgHost {
   }
 
   setNow(): void {
-    const newTime = floor(Date.now() / 60000) * 60000;
+    const newTime = new Date(2024, 0, 1).getTime();
 
     if (this.time !== newTime) {
       this.time = newTime;
@@ -694,6 +719,25 @@ export class AppComponent implements OnInit, SvgHost {
     this.graphicsRateChangeCheck();
 
     const jdu = julianDay(this.time);
+    const basicPositions = calculateBasicPositions(this.time, this.getZone(), this.observer, this.disableDst);
+    const date = basicPositions._date;
+    const wt = date.wallTime;
+
+    if (this.playing) {
+      const matchingDate = STOP_DATES.find(stopDate => 
+        stopDate.year === wt.year && 
+        stopDate.month === wt.month && 
+        stopDate.day === wt.day
+      );
+      
+      if (matchingDate) {
+        const dateKey = `${matchingDate.year}-${matchingDate.month}-${matchingDate.day}`;
+        if (!this.stoppedDates.has(dateKey)) {
+          this.stoppedDates.add(dateKey);
+          this.stop();
+        }
+      }
+    }
 
     // Finding sunset events can be slow at high latitudes, so use cached values when possible.
     if (forceUpdate || !this.sunsetA || !this.sunsetB || jdu <= this.sunsetA.ut || jdu > this.sunsetB.ut) {
@@ -704,10 +748,6 @@ export class AppComponent implements OnInit, SvgHost {
 
     const dayLength = this.sunsetB.ut - this.sunsetA.ut;
     const bohemianHour = (jdu - this.sunsetA.ut) / dayLength * 24;
-    const basicPositions =
-      calculateBasicPositions(this.time, this.getZone(), this.observer, this.disableDst);
-    const date = basicPositions._date;
-    const wt = date.wallTime;
     const dateLocal = new DateTime(this.time, this.localTimezone);
     const jde = basicPositions._jde;
     const southern = this.self.southern;
@@ -963,5 +1003,15 @@ export class AppComponent implements OnInit, SvgHost {
       return $localize`Third quarter`;
     else
       return text;
+  }
+
+  getStopDateImage(): string | null {
+    const clockDate = new DateTime(this.time).toDate();
+    const matchingDate = this.STOP_DATE_IMAGES.find(item => 
+      item.date.getDate() === clockDate.getDate() &&
+      item.date.getMonth() === clockDate.getMonth()
+    );
+    
+    return matchingDate ? matchingDate.imageUrl : null;
   }
 }
