@@ -260,55 +260,55 @@ export class AppComponent implements OnInit, SvgHost {
       date: new Date(2024, 1, 2), // February 2nd
       title: 'finally feeling competent with LLMs',
       description: "it took me 6 months of work to really feel like i understood how to do stuff - i had to write a trainer with 3d parallelism to finally get it. doing so also made me realize that a shocking number of people who work in AI don't understand pretraining",
-      imageUrl: 'assets/0202-llm.png',
+      imageUrl: 'assets/0202-llm.jpg',
     },
     {
       date: new Date(2024, 1, 12), // February 12th
       title: 'birthday surprises!',
       description: 'so many surprises this year!! A got me a cat lamp, S made a website inspired by one of my blogs, and i was also ambushed at a Chinese New Year party. i love friends <3',
-      imageUrl: 'assets/0212-bday.png',
+      imageUrl: 'assets/0212-bday.jpg',
     },
     {
       date: new Date(2024, 1, 16), // February 16th
       title: 'finished reading NVC',
       description: 'part of a longer-term communication overhaul that started in late 2023 (i wanted to avoid repeating mistakes i made during a breakup)',
-      imageUrl: 'assets/0216-nvc.png',
+      imageUrl: 'assets/0216-nvc.jpg',
     },
     {
       date: new Date(2024, 1, 20), // February 20th
       title: "saw my friends' production of 'Tick, Tick... Boom!'",
       description: "stage version is way better than the movie. really great portrayal of artistic anxiety",
-      imageUrl: 'assets/0220-ttb.png'
+      imageUrl: 'assets/0220-ttb.jpg'
     },
     {
       date: new Date(2024, 2, 2), // March 2nd
       title: "moved into new house with friends!!",
       description: "assembled lots of chairs, spent a week looking for non-fiberglass mattresses, became plant caretaker, watched Marley eat cheese",
-      imageUrl: 'assets/0302-house.png'
+      imageUrl: 'assets/0302-house.jpg'
     },
     {
       date: new Date(2024, 2, 9), // March 9th
       title: "tried Waymo for the first time!",
       description: "feels a bit absurd, like you're using your phone to summon a 3000-pound metal pokemon",
-      imageUrl: 'assets/0309-waymo.png'
+      imageUrl: 'assets/0309-waymo.jpg'
     },
     {
       date: new Date(2024, 3, 8), // April 8th
       title: "SAW THE TOTAL ECLIPSE!!!",
       description: "fun fact: most total eclipses have already happened, as the moon is slowly moving away from the earth and will eventually be too far away to cover the sun\nfun fact 2: if you're on slow mode, you can see the eclipse happen on the astronomical clock, down to the hour! (keeping in mind that the clock shows Prague time without daylight savings)",
-      imageUrl: 'assets/0408-eclipse.png'
+      imageUrl: 'assets/0408-eclipse.jpg'
     },
     {
       date: new Date(2024, 4, 18), // May 18th
       title: 'road trip to South Dakota',
       description: 'fought my fear of heights',
-      imageUrl: 'assets/0518-notch.png'
+      imageUrl: 'assets/0518-notch.jpg'
     },
     {
       date: new Date(2024, 5, 25), // June 25th
       title: 'wrote (with coworkers) a blog post on how to set up clusters for LLM pretraining',
       description: "my friends at compute/infra companies tell me this blog post is now required onboarding material for them, which is hilarious as we're not even an infra company",
-      imageUrl: 'assets/0625-infra.png'
+      imageUrl: 'assets/0625-infra.jpg'
     },
     {
       date: new Date(2024, 6, 19), // July 19th
@@ -319,25 +319,25 @@ export class AppComponent implements OnInit, SvgHost {
       date: new Date(2024, 6, 31), // July 31st
       title: 'invented lunge circle',
       description: "lunges except you go harder because of social pressure!\nunfortunately i have no pictures of real lunge circle so you're getting the meme version",
-      imageUrl: 'assets/0731-lunge.png'
+      imageUrl: 'assets/0731-lunge.jpg'
     },
     {
       date: new Date(2024, 7, 18), // August 18th
       title: 'brain hack!',
       description: 'left Imbue to go play with tofu and Orbeez for a week. also learned some physics and saw good mech-e up close for the first time',
-      imageUrl: 'assets/0818-brain.png'
+      imageUrl: 'assets/0818-brain.jpg'
     },
     {
       date: new Date(2024, 7, 20), // August 20th
       title: 'dyed hair!',
       description: "i came from an environment where dyeing was very common (MIT) and didn't realize how uncommon it is in SF until dyeing myself",
-      imageUrl: 'assets/0820-hair.png'
+      imageUrl: 'assets/0820-hair.jpg'
     },
     {
       date: new Date(2024, 8, 5), // September 5th
       title: 'finally saw Wicked after like 9 years of waiting',
       description: 'stage effects were pretty cool and For Good is still one of my favorite songs',
-      imageUrl: 'assets/0905-wicked.png'
+      imageUrl: 'assets/0905-wicked.jpg'
     },
     {
       date: new Date(2024, 8, 16), // September 16th
@@ -348,13 +348,13 @@ export class AppComponent implements OnInit, SvgHost {
       date: new Date(2024, 8, 30), // September 30th
       title: 'my first real research contribution!',
       description: "figured out how to attribute language model outputs to individual neurons, allowing us to understand problems like '9.8 < 9.11'. prior to this we'd been trying to steer models for months without success because we couldn't identify the right set of neurons to intervene on",
-      imageUrl: 'assets/0930-steer.png'
+      imageUrl: 'assets/0930-steer.jpg'
     },
     {
       date: new Date(2024, 9, 22), // October 22nd
       title: 'Transluce launch day!',
       description: 'stayed up until 6 getting deployments ready with Kevin! very exhilirating, felt like a hackathon except actually useful. also my first time using a lot of tech - Cloudflare, Modal, Gunicorn, Posthog, etc.',
-      imageUrl: 'assets/1022-transluce.png',
+      imageUrl: 'assets/1022-transluce.jpg',
     },
     {
       date: new Date(2024, 9, 25), // October 25th
@@ -366,7 +366,7 @@ export class AppComponent implements OnInit, SvgHost {
       date: new Date(2024, 9, 30), // October 30th
       title: 'talked to Sam Altman',
       description: "he really forces you to grapple with 'what if we succeed', which i (and many other smart friends) have been avoiding thinking seriously about",
-      imageUrl: 'assets/1030-sama.png'
+      imageUrl: 'assets/1030-sama.jpg'
     },
     {
       date: new Date(2024, 10, 5), // November 5th
@@ -389,7 +389,7 @@ export class AppComponent implements OnInit, SvgHost {
       date: new Date(2024, 10, 16), // November 16th
       title: 'went to Prague!',
       description: "saw many things, most notably the castle, cathedral, and astronomical clock. i think it's kind of incredible how accurately they were tracking and reconstructing solar and lunar movements in ~1400? also saw their independence day celebrations, which are much more festive than the 4th of July",
-      imageUrl: 'assets/1116-clock.png',
+      imageUrl: 'assets/1116-clock.jpg',
     },
     {
       date: new Date(2024, 10, 20), // November 20th
@@ -401,13 +401,13 @@ export class AppComponent implements OnInit, SvgHost {
       date: new Date(2024, 11, 6), // December 6th
       title: 'Interstellar 10th anniverary IMAX release!',
       description: "hits so hard when the screen takes up your entire field of view and the speakers shake the room. felt like i could dream bigger afterwards (photo not mine)",
-      imageUrl: 'assets/1206-interstellar.png'
+      imageUrl: 'assets/1206-interstellar.jpg'
     },
     {
       date: new Date(2024, 11, 13), // December 13th
       title: "visited Neurips",
       description: "nice to see all my AI friends in one place. most talks were not very good, but Ilya's Test of Time talk was interesting - i still find it remarkable that his paper 10 years ago predicted scaling laws, pretraining, and the success of autoregressive models at a time when transformers hadn't even been invented yet",
-      imageUrl: 'assets/1213-ilya.png'
+      imageUrl: 'assets/1213-ilya.jpg'
     },
   ];
 
