@@ -9,7 +9,7 @@
     "start:es": "ng serve --configuration=es",
     "start:fr": "ng serve --configuration=fr",
     "i18n": "ng extract-i18n",
-    "build": "ng build --base-href /orloj/",
+    "build": "ng build --base-href /",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "eslint \"src/**/*.ts\" && stylelint --custom-syntax postcss-scss \"**/*.scss\"",
