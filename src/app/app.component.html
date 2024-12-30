@@ -1,15 +1,21 @@
 <div class="wrapper" [class.collapsed]="collapsed && showInfoPanel" [class.narrow]="collapsed && !showInfoPanel">
   <div class="controls tbw-dark-mode">
+    <h1>2024 as observed by the Prague Astronomical Clock</h1>
     <div class="button-row time-row">
       <fa-icon [icon]="faPlay" class="fa-xl" [class.disabled]="playing && playSpeed === NORMAL" (click)="play()"></fa-icon>
       <fa-icon [icon]="faForward" class="fa-xl" [class.disabled]="playing && playSpeed === FAST" (click)="playFast()"></fa-icon>
       <fa-icon [icon]="faStop" class="fa-xl" [class.disabled]="!playing" (click)="stop()"></fa-icon>
+      <div class="time-display">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{timeText}}</div>
     </div>
-    <div class="time-display">{{timeText}}</div>
+    
     <!-- Additional content can be added here -->
-    <img *ngIf="getStopDateImage()" 
+    <div class="margin-left-10" *ngIf="getStopDateTitle()">
+      <h3>{{ getStopDateTitle() }}</h3>
+      <p>{{ getStopDateDescription() }}</p>
+      <img *ngIf="getStopDateImage()" 
          [src]="getStopDateImage()" 
          alt="Special Date Image">
+    </div>
   </div>
 
   <div id="svg-wrapper" [class.wide]="collapsed && !showInfoPanel"
@@ -479,5 +485,5 @@
       </g>
     </svg>
   </div>
-  <div i18n id="graphics-credit">Original SVG clock graphics by Jan Tošovský</div>
+  <div i18n id="graphics-credit">Code <a href="https://github.com/vincenthuang75025/clock-2024">here</a>, forked from <a href="https://github.com/kshetline/prague-clock">kshetline</a></div>
 </div>

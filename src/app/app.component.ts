@@ -33,12 +33,6 @@ const SIMPLE_FILTER_IS_SLOW_TOO = isAndroid() || (isSafari() && isMacOS());
 const STOP_FILTERING_DELAY = SIMPLE_FILTER_IS_SLOW_TOO ? 1000 : 3000;
 const START_FILTERING_DELAY = SIMPLE_FILTER_IS_SLOW_TOO ? 1000 : 500;
 
-const STOP_DATES = [
-  { year: 2024, month: 1, day: 4 },  // January 15, 2024
-  { year: 2024, month: 1, day: 9 },  // February 14, 2024
-  // Add more dates as needed
-];
-
 enum EventType { EQUISOLSTICE, MOON_PHASE, RISE_SET }
 enum PlaySpeed { NORMAL, FAST }
 
@@ -107,7 +101,9 @@ languageList.forEach(language =>
 
 interface DateImage {
   date: Date;
-  imageUrl: string;
+  title: string;
+  description?: string;
+  imageUrl?: string;
 }
 
 @Component({
@@ -255,15 +251,201 @@ export class AppComponent implements OnInit, SvgHost {
 
   private STOP_DATE_IMAGES: DateImage[] = [
     {
-      date: new Date(2024, 0, 4), // January 4th
-      imageUrl: 'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png'
+      date: new Date(2024, 0, 5), // January 5th
+      title: 'crashed the JMM conference',
+      description: "saw my math friends and sat in on a talk by Terence Tao. it was the best explanation of hard math i've ever heard - this guy is constantly aware of the exact right level of abstraction to explain concepts at",
+      imageUrl: 'assets/0105-jmm.jpg',
     },
     {
-      date: new Date(2024, 0, 9), // January 9th
-      imageUrl: 'https://i.pinimg.com/736x/b3/08/4b/b3084b1ce3c1af6e9a730b29ea0e4912.jpg'
+      date: new Date(2024, 1, 2), // February 2nd
+      title: 'finally feeling competent with LLMs',
+      description: "it took me 6 months of work to really feel like i understood how to do stuff - i had to write a trainer with 3d parallelism to finally get it. also made me realize that a shocking number of people who work in AI don't understand pretraining",
+      imageUrl: 'assets/0202-llm.png',
     },
-    // Add more date-image pairs as needed
+    {
+      date: new Date(2024, 1, 12), // February 12th
+      title: 'birthday surprises!',
+      description: 'so many surprises this year!! A got me a cat lamp, S made a website inspired by one of my blogs, and i was also ambushed at a Chinese New Year party. i love friends <3',
+      imageUrl: 'assets/0212-bday.png',
+    },
+    {
+      date: new Date(2024, 1, 16), // February 16th
+      title: 'finished reading NVC',
+      description: 'part of a longer-term communication overhaul that started in late 2023 (i wanted to avoid repeating mistakes i made during a breakup)',
+      imageUrl: 'assets/0216-nvc.png',
+    },
+    {
+      date: new Date(2024, 1, 20), // February 20th
+      title: "saw my friends' production of 'Tick, Tick... Boom!'",
+      description: "stage version is way better than the movie. really great portrayal of artistic anxiety",
+      imageUrl: 'assets/0220-ttb.png'
+    },
+    {
+      date: new Date(2024, 2, 2), // March 2nd
+      title: "moved into new house with friends!!",
+      description: "assembled lots of chairs, spent a week looking for non-fiberglass mattresses, became plant caretaker, watched Marley eat cheese",
+      imageUrl: 'assets/0302-house.png'
+    },
+    {
+      date: new Date(2024, 2, 9), // March 9th
+      title: "tried Waymo for the first time!",
+      description: "feels a bit absurd, like you're using your phone to summon a 3000-pound metal pokemon",
+      imageUrl: 'assets/0309-waymo.png'
+    },
+    {
+      date: new Date(2024, 3, 8), // April 8th
+      title: "SAW THE TOTAL ECLIPSE!!!",
+      description: "fun fact: most total eclipses have already happened, as the moon is slowly moving away from the earth\nfun fact 2: you can see the eclipse happen on the astronomical clock, down to the hour!",
+      imageUrl: 'assets/0408-eclipse.png'
+    },
+    {
+      date: new Date(2024, 4, 18), // May 18th
+      title: 'road trip to South Dakota',
+      description: 'fought my fear of heights',
+      imageUrl: 'assets/0518-notch.png'
+    },
+    {
+      date: new Date(2024, 5, 25), // June 25th
+      title: 'wrote (with coworkers) a blog post on how to set up clusters for LLM pretraining',
+      description: "my friends at compute/infra companies tell me this blog post is now required onboarding material for them, which is hilarious as we're not even an infra company",
+      imageUrl: 'assets/0625-infra.png'
+    },
+    {
+      date: new Date(2024, 6, 19), // July 19th
+      title: 'tried shrooms^ for the first time',
+      description: "with my best friend A who happened to be visiting! went much better than expected - i thought i would be anxious but the anxiety never materialized and instead i laughed so much my abs hurt for days afterwards\n\nrealized 2 things:\n1) many of my problems stem from overthinking about the future. when i stop thinking about the future it genuinely feels like problems don't exist \n2) when i encounter obstacles my instinct is to try harder and power through them, but oftentimes the obstacle is a sign that i should be taking a different approach entirely\n\n\n^for legal reasons this refers to oyster mushrooms"
+    },
+    {
+      date: new Date(2024, 6, 31), // July 31st
+      title: 'invented lunge circle',
+      description: "lunges except you go harder because of social pressure!\nunfortunately i have no pictures of real lunge circle so you're getting the meme version",
+      imageUrl: 'assets/0731-lunge.png'
+    },
+    {
+      date: new Date(2024, 7, 18), // August 18th
+      title: 'brain hack!',
+      description: 'left Imbue to go play with tofu and orbeez for a week. also learned some physics and saw good mech-e up close for the first time',
+      imageUrl: 'assets/0818-brain.png'
+    },
+    {
+      date: new Date(2024, 7, 20), // August 20th
+      title: 'dyed hair!',
+      description: "i came from an environment where dyeing was very common (MIT) and didn't realize how uncommon it is in SF until dyeing myself",
+      imageUrl: 'assets/0820-hair.png'
+    },
+    {
+      date: new Date(2024, 8, 5), // September 5th
+      title: 'finally saw Wicked after like 9 years of waiting',
+      description: 'stage effects were pretty cool and For Good is still one of my favorite songs',
+      imageUrl: 'assets/0905-wicked.png'
+    },
+    {
+      date: new Date(2024, 8, 16), // September 16th
+      title: 'started going to dance classes',
+      description: "i don't have much to say on this other than that i think it's good for the soul to regularly do an activity that you enjoy while being bad at it",
+    },
+    {
+      date: new Date(2024, 8, 30), // September 30th
+      title: 'my first real research contribution!',
+      description: "figured out how to attribute language model outputs to individual neurons, allowing us to understand problems like '9.8 < 9.11'. prior to this we'd been trying to steer models for months without success because we couldn't identify the right set of neurons to intervene on",
+      imageUrl: 'assets/0930-steer.png'
+    },
+    {
+      date: new Date(2024, 9, 22), // October 22nd
+      title: 'Transluce launch day!',
+      description: 'stayed up until 6 getting deployments ready with Kevin! very exhilirating, felt like a hackathon except actually useful. also my first time using a lot of tech - Cloudflare, Modal, Gunicorn, Posthog, etc.',
+      imageUrl: 'assets/1022-transluce.png',
+    },
+    {
+      date: new Date(2024, 9, 25), // October 25th
+      title: "THANK GOD I CAN GET OFF THIS TRAIN I'VE BEEN STUCK ON FOR THE LAST 60 HOURS",
+      description: "took the California Zephyr from SF to Chicago. incredibly scenic (especially Utah + Colorado) but gross bathrooms and brutal delays due to engine failures",
+      imageUrl: 'assets/1025-train.jpg'
+    },
+    {
+      date: new Date(2024, 9, 30), // October 30th
+      title: 'talked to Sam Altman',
+      description: "he really forces you to grapple with 'what if we succeed', which i (and many other smart friends) have been avoiding thinking seriously about",
+      imageUrl: 'assets/1030-sama.png'
+    },
+    {
+      date: new Date(2024, 10, 5), // November 5th
+      title: 'visited the Netherlands',
+      description: "saw the Markthal in Rotterdam. it felt truly absurd - they built this incredibly dramatic structure and then decided to put an ordinary food court in the lobby",
+      imageUrl: 'assets/1105-markthal.jpg'
+    },
+    {
+      date: new Date(2024, 10, 13), // November 13th
+      title: 'new favorite picture of myself?',
+      description: "S sent me a drawing, and then multiple friends said they could tell it was me based on how i hold plushies <3",
+      imageUrl: 'assets/1113-plush.jpg',
+    },
+    {
+      date: new Date(2024, 10, 15), // November 15th
+      title: 'A asked me to narrate my life to them',
+      description: "we covered most of the important stuff in 4-5 hours? it was a very interesting experience, would recommend trying. helped me uncover patterns that i didn't realize existed, eg:\n\n1) the origins of my insecure attachment and associated beliefs\n2) how SPARC made me good at talking to a very specific kind of person even though i was still bad at talking to everyone else\n3) how i became productivity-pilled but for the wrong reasons\n\nand i think we often tell ourselves unfaithful narratives of the past and telling them to close friends can help remove some of the distortion",
+    },
+    {
+      date: new Date(2024, 10, 16), // November 16th
+      title: 'went to Prague!',
+      description: "saw many things, most notably the castle, cathedral, and astronomical clock. i think it's kind of incredible how accurately they were tracking and reconstructing solar and lunar movements in ~1400? also saw their independence day celebrations, which are much more festive than the 4th of July",
+      imageUrl: 'assets/1116-clock.png',
+    },
+    {
+      date: new Date(2024, 10, 20), // November 20th
+      title: "SAW THE MOST GORGEOUS BUILDING OF ALL TIME",
+      description: "the Budapest House of Music was actually so astonishingly beautiful that i thought about it for two days straight like just look at the high glass walls and forest-inspired roof! and the interior is a cool music museum where they give you a headset that tracks your location and plays the relevant music for whatever display you're looking at",
+      imageUrl: 'assets/1120-buda.jpg'
+    },
+    {
+      date: new Date(2024, 11, 6), // December 6th
+      title: 'Interstellar 10th anniverary IMAX release!',
+      description: "hits so hard when the screen takes up your entire field of view and the speakers shake the room. felt like i could dream bigger afterwards (photo not mine)",
+      imageUrl: 'assets/1206-interstellar.png'
+    },
+    {
+      date: new Date(2024, 11, 13), // December 13th
+      title: "visited Neurips",
+      description: "nice to see all my AI friends in one place. most talks were not very good, but Ilya's Test of Time talk was interesting - i still find it remarkable that his paper 10 years ago predicted scaling laws, pretraining, and the success of autoregressive models at a time when transformers hadn't even been invented yet",
+      imageUrl: 'assets/1213-ilya.png'
+    }, // new Date(2024, 0, 1), // 
   ];
+
+  private STOP_DATES = this.STOP_DATE_IMAGES.map(item => ({
+    year: item.date.getFullYear(),
+    month: item.date.getMonth() + 1, // Adding 1 since getMonth() is 0-based
+    day: item.date.getDate()
+  }));
+
+  getStopDateImage(): string | null {
+    const clockDate = new DateTime(this.time).toDate();
+    const matchingDate = this.STOP_DATE_IMAGES.find(item => 
+      item.date.getDate() === clockDate.getDate() &&
+      item.date.getMonth() === clockDate.getMonth()
+    );
+    
+    return matchingDate ? matchingDate.imageUrl : null;
+  }
+
+  getStopDateTitle(): string | null {
+    const clockDate = new DateTime(this.time).toDate();
+    const matchingDate = this.STOP_DATE_IMAGES.find(item => 
+      item.date.getDate() === clockDate.getDate() &&
+      item.date.getMonth() === clockDate.getMonth()
+    );
+    
+    return matchingDate ? matchingDate.title : null;
+  }
+
+  getStopDateDescription(): string | null {
+    const clockDate = new DateTime(this.time).toDate();
+    const matchingDate = this.STOP_DATE_IMAGES.find(item => 
+      item.date.getDate() === clockDate.getDate() &&
+      item.date.getMonth() === clockDate.getMonth()
+    );
+    
+    return matchingDate ? matchingDate.description : null;
+  }
 
   get filterEcliptic(): string {
     return this.fasterGraphics && (!this.svgFilteringOn || this.playing) ? null : 'url("#filterEcliptic")';
@@ -724,7 +906,7 @@ export class AppComponent implements OnInit, SvgHost {
     const wt = date.wallTime;
 
     if (this.playing) {
-      const matchingDate = STOP_DATES.find(stopDate => 
+      const matchingDate = this.STOP_DATES.find(stopDate => 
         stopDate.year === wt.year && 
         stopDate.month === wt.month && 
         stopDate.day === wt.day
@@ -1003,15 +1185,5 @@ export class AppComponent implements OnInit, SvgHost {
       return $localize`Third quarter`;
     else
       return text;
-  }
-
-  getStopDateImage(): string | null {
-    const clockDate = new DateTime(this.time).toDate();
-    const matchingDate = this.STOP_DATE_IMAGES.find(item => 
-      item.date.getDate() === clockDate.getDate() &&
-      item.date.getMonth() === clockDate.getMonth()
-    );
-    
-    return matchingDate ? matchingDate.imageUrl : null;
   }
 }
