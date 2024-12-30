@@ -26,7 +26,6 @@
             "customWebpackConfig": {
               "path": "./webpack.config.js"
             },
-            "localize": true,
             "outputPath": "dist/prague-clock",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -73,23 +72,7 @@
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true,
-              "localize": ["en-US"]
-            },
-            "cs": {
-              "localize": ["cs"]
-            },
-            "de": {
-              "localize": ["de"]
-            },
-            "es": {
-              "localize": ["es"]
-            },
-            "fr": {
-              "localize": ["fr"]
-            },
-            "en-US": {
-              "localize": ["en-US"]
+              "namedChunks": true
             }
          },
           "defaultConfiguration": "production"
@@ -102,21 +85,6 @@
             },
             "development": {
               "browserTarget": "prague-clock:build:development"
-            },
-            "cs": {
-              "browserTarget": "prague-clock:build:cs"
-            },
-            "de": {
-              "browserTarget": "prague-clock:build:de"
-            },
-            "es": {
-              "browserTarget": "prague-clock:build:es"
-            },
-            "fr": {
-              "browserTarget": "prague-clock:build:fr"
-            },
-            "en-US": {
-              "browserTarget": "prague-clock:build:en-US"
             }
           },
           "defaultConfiguration": "development"

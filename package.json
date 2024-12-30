@@ -4,10 +4,6 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --configuration=development",
-    "start:cs": "ng serve --configuration=cs",
-    "start:de": "ng serve --configuration=de",
-    "start:es": "ng serve --configuration=es",
-    "start:fr": "ng serve --configuration=fr",
     "i18n": "ng extract-i18n",
     "build": "ng build --base-href /",
     "watch": "ng build --watch --configuration development",
