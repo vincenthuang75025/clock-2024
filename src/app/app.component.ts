@@ -253,13 +253,13 @@ export class AppComponent implements OnInit, SvgHost {
     {
       date: new Date(2024, 0, 5), // January 5th
       title: 'crashed the JMM conference',
-      description: "saw my math friends and sat in on a talk by Terence Tao. it was the best explanation of hard math i've ever heard - this guy is constantly aware of the exact right level of abstraction to explain concepts at",
+      description: "saw my math friends and sat in on a talk by Terence Tao. it was the best explanation of difficult math i've ever heard - i think it's because he is constantly aware of the exact right level of abstraction to explain new concepts at",
       imageUrl: 'assets/0105-jmm.jpg',
     },
     {
       date: new Date(2024, 1, 2), // February 2nd
       title: 'finally feeling competent with LLMs',
-      description: "it took me 6 months of work to really feel like i understood how to do stuff - i had to write a trainer with 3d parallelism to finally get it. also made me realize that a shocking number of people who work in AI don't understand pretraining",
+      description: "it took me 6 months of work to really feel like i understood how to do stuff - i had to write a trainer with 3d parallelism to finally get it. doing so also made me realize that a shocking number of people who work in AI don't understand pretraining",
       imageUrl: 'assets/0202-llm.png',
     },
     {
@@ -295,7 +295,7 @@ export class AppComponent implements OnInit, SvgHost {
     {
       date: new Date(2024, 3, 8), // April 8th
       title: "SAW THE TOTAL ECLIPSE!!!",
-      description: "fun fact: most total eclipses have already happened, as the moon is slowly moving away from the earth\nfun fact 2: you can see the eclipse happen on the astronomical clock, down to the hour!",
+      description: "fun fact: most total eclipses have already happened, as the moon is slowly moving away from the earth and will eventually be too far away to cover the sun\nfun fact 2: if you're on slow mode, you can see the eclipse happen on the astronomical clock, down to the hour! (keeping in mind that the clock shows Prague time without daylight savings)",
       imageUrl: 'assets/0408-eclipse.png'
     },
     {
@@ -324,7 +324,7 @@ export class AppComponent implements OnInit, SvgHost {
     {
       date: new Date(2024, 7, 18), // August 18th
       title: 'brain hack!',
-      description: 'left Imbue to go play with tofu and orbeez for a week. also learned some physics and saw good mech-e up close for the first time',
+      description: 'left Imbue to go play with tofu and Orbeez for a week. also learned some physics and saw good mech-e up close for the first time',
       imageUrl: 'assets/0818-brain.png'
     },
     {
@@ -342,7 +342,7 @@ export class AppComponent implements OnInit, SvgHost {
     {
       date: new Date(2024, 8, 16), // September 16th
       title: 'started going to dance classes',
-      description: "i don't have much to say on this other than that i think it's good for the soul to regularly do an activity that you enjoy while being bad at it",
+      description: "i don't have much to say on this other than that i think it's good for the soul to regularly do an activity that you enjoy while being bad at it. otherwise you literally start to forget that you can try and enjoy things as a beginner",
     },
     {
       date: new Date(2024, 8, 30), // September 30th
@@ -383,7 +383,7 @@ export class AppComponent implements OnInit, SvgHost {
     {
       date: new Date(2024, 10, 15), // November 15th
       title: 'A asked me to narrate my life to them',
-      description: "we covered most of the important stuff in 4-5 hours? it was a very interesting experience, would recommend trying. helped me uncover patterns that i didn't realize existed, eg:\n\n1) the origins of my insecure attachment and associated beliefs\n2) how SPARC made me good at talking to a very specific kind of person even though i was still bad at talking to everyone else\n3) how i became productivity-pilled but for the wrong reasons\n\nand i think we often tell ourselves unfaithful narratives of the past and telling them to close friends can help remove some of the distortion",
+      description: "we covered most of the important stuff in 4-5 hours? it was a very interesting experience, would recommend trying. helped me uncover patterns that i didn't realize existed, eg:\n\n1) the origins of my insecure attachment and associated beliefs\n2) how SPARC made me good at talking to a very specific kind of person even though i was still bad at talking to everyone else\n3) how i became productivity-pilled but for the wrong reasons\n\nand i think we often tell ourselves unfaithful narratives of the past and restating them to close friends can help remove some of the distortion",
     },
     {
       date: new Date(2024, 10, 16), // November 16th
@@ -408,7 +408,7 @@ export class AppComponent implements OnInit, SvgHost {
       title: "visited Neurips",
       description: "nice to see all my AI friends in one place. most talks were not very good, but Ilya's Test of Time talk was interesting - i still find it remarkable that his paper 10 years ago predicted scaling laws, pretraining, and the success of autoregressive models at a time when transformers hadn't even been invented yet",
       imageUrl: 'assets/1213-ilya.png'
-    }, // new Date(2024, 0, 1), // 
+    },
   ];
 
   private STOP_DATES = this.STOP_DATE_IMAGES.map(item => ({
@@ -421,7 +421,8 @@ export class AppComponent implements OnInit, SvgHost {
     const clockDate = new DateTime(this.time).toDate();
     const matchingDate = this.STOP_DATE_IMAGES.find(item => 
       item.date.getDate() === clockDate.getDate() &&
-      item.date.getMonth() === clockDate.getMonth()
+      item.date.getMonth() === clockDate.getMonth() &&
+      item.date.getFullYear() === clockDate.getFullYear()
     );
     
     return matchingDate ? matchingDate.imageUrl : null;
@@ -431,7 +432,8 @@ export class AppComponent implements OnInit, SvgHost {
     const clockDate = new DateTime(this.time).toDate();
     const matchingDate = this.STOP_DATE_IMAGES.find(item => 
       item.date.getDate() === clockDate.getDate() &&
-      item.date.getMonth() === clockDate.getMonth()
+      item.date.getMonth() === clockDate.getMonth() && 
+      item.date.getFullYear() === clockDate.getFullYear()
     );
     
     return matchingDate ? matchingDate.title : null;
@@ -441,7 +443,8 @@ export class AppComponent implements OnInit, SvgHost {
     const clockDate = new DateTime(this.time).toDate();
     const matchingDate = this.STOP_DATE_IMAGES.find(item => 
       item.date.getDate() === clockDate.getDate() &&
-      item.date.getMonth() === clockDate.getMonth()
+      item.date.getMonth() === clockDate.getMonth() &&
+      item.date.getFullYear() === clockDate.getFullYear()
     );
     
     return matchingDate ? matchingDate.description : null;
