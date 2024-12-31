@@ -30,7 +30,7 @@ p-toast, p-confirmDialog {
   color: $controls-text;
   display: flex;
   flex-direction: column;
-  font: 14px Arial, sans-serif;
+  font: 14px Monaco, monospace;
   gap: 4px;
   grid-area: 1 / 2;
   justify-self: end;
